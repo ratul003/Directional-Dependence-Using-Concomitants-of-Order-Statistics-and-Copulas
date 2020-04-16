@@ -1,0 +1,657 @@
+This is an R Markdown document for concomitant of order statistics and directional dependence. 
+NONCONSTANT VARIATION
+#```{r}
+y=rbind(data.frame(y=rnorm(8,mean=1,sd=1)),data.frame(y=rnorm(8,mean=2,sd=2^3)),data.frame(y=rnorm(8,mean=3,sd=3^3)),data.frame(y=rnorm(8,mean=4,sd=4^3)),data.frame(y=rnorm(8,mean=5,sd=5^3)))
+x=c(rep(1,8),rep(2,8),rep(3,8),rep(4,8),rep(5,8))
+x=x+rnorm(40,mean=0,sd=0.03)
+```
+
+SCATTER PLOT DATA SAME CORRELATION DIFFERENT SCATTER PLOTS
+
+
+#```{r}
+SAMECOR <- read.csv("/Users/Sungur/Desktop/Research/Concomitants/SAMECORDATA.csv")
+SET1 = data.frame(SAMECOR$x7,SAMECOR$y7)
+SET2 = SET1[complete.cases(SET1),]
+x <- SET2$SAMECOR.x7
+y <- SET2$SAMECOR.y7
+length(SET2$SAMECOR.x7)
+```
+
+GENERATING BIVARIATE NORMAL
+
+```{r}
+library(MASS)
+bvnorm = mvrnorm(n = 10, c(0,0), matrix(c(1,0.5,0.5,1),nrow=2,byrow=T))
+x = bvnorm[,1]
+y = bvnorm[,2]
+```
+
+GENERATING FROM ASYMETTRIC COPULA
+#```{r}
+library(copBasic)
+mainpara <- list(cop1=PLACKETTcop, cop2=PLACKETTcop,
+                 para1gen=function() { return(c(10^runif(1,min=-5,max=0))) },
+                 para2gen=function() { return(c(10^runif(1,min= 0,max=5))) })
+v <- simcompositeCOP(n=10, nsim=1, parent=mainpara, showresults=TRUE)
+v
+```
+
+x = c(20,10,30,15,40,30,60,70,100,110)
+y = c(40,20,30,10,50,60,20,120,130,200)
+x = c(10,20,30,40,50,60,70,80,90,100)
+y = c(10,20,30,40,50,60,70,80,90,100)
+x = c(10,20,30,40,50,60,70,80,90,100)
+y = c(100,90,80,70,60,50,40,30,20,10)
+x = c(10,20,30,40,50,60,70,80,90,100)
+y = c(1000,90,80,50,60,70,40,30,20,10)
+
+
+#```{r}
+x=rnorm(1000,mean=0,sd=20)
+y=rnorm(1000,mean=0,sd=20)
+```
+
+
+#```{r}
+x=rexp(1000,rate=2)
+y=rexp(1000,rate=200)
+```
+
+
+#```{r}
+x=rnorm(1000)
+y=3-5*(x)+rnorm(1000,sd=0.6)
+```
+#```{r}
+x=rnorm(1000)
+y=x^2
+```
+
+
+x = c(10,20,30,40,50,60,70,80,90,100)
+y = c(10,20,30,40,50,60,70,80,90,100)
+
+#```{r}
+x = c(20,10,30,15,40,30,60,70,100,110)
+y = c(40,20,30,10,50,60,20,120,130,200)
+```
+x=rnorm(1000,mean=0,sd=0.01)
+y=rexp(1000,rate=2)
+
+
+x = cars$speed
+y = cars$dist
+
+#```{r}
+x = cars$speed
+y = cars$dist
+```
+
+#```{r}
+x=cars$speed
+result=lm(cars$dist~cars$speed)
+y=result$residuals
+```
+
+#```{r}
+x=cars$dist
+result=lm(cars$speed~cars$dist)
+y=result$residuals
+```
+
+From a file
+#```{r}
+datadir0003 <- read.table("/Users/Sungur/Desktop/Directional Data/pair0003.txt",header=T)
+x <- datadir0003$x
+y <- datadir0003$y
+length(datadir0003$x)
+```
+
+THIS IS FOR THE HIGHEST CONCOR'S AND COR DIFFERENCE
+
+#```{r}
+MEARA <- read.csv("/Users/Sungur/Desktop/Research/Concomitants/Data with highest difference on concors and cor.csv",header=T)
+x <- (MEARA$X/5.710053)*4.9
+y <- (MEARA$Y/8.026827)*4.9
+length(MEARA$X)
+```
+
+#```{r}
+OBJECTS <- read.csv("/Users/Sungur/Desktop/Research/Concomitants/objects.csv",header=T)
+x <- OBJECTS$maxwidth
+y <- OBJECTS$area
+length(OBJECTS$maxwidth)
+```
+
+
+#```{r}
+MEARA <- read.csv("/Users/Sungur/Desktop/Research/Concomitants/Data with highest difference on concors and cor.csv",header=T)
+x <- (MEARA$X/5.710053)*4.9
+y <- (MEARA$Y/8.026827)*4.9
+length(MEARA$X)
+```
+
+#```{r}
+MEARA <- read.csv("/Users/Sungur/Desktop/Research/Concomitants/Data with highest difference on concors and cor.csv",header=T)
+x <- MEARA$X
+y <- MEARA$Y
+length(MEARA$X)
+```
+
+Rich Data
+#```{r}
+Rich <- read.csv("~/Downloads/Rich2.csv")
+RichComplete = na.omit(Rich)
+RichFemale = subset(Rich, Gender=="f")
+RichMale = subset(Rich, Gender=="m")
+x <- RichComplete$Overall.SF.36
+y <- RichComplete$DASH.Score.RIGHT
+
+```
+
+Now combine them and create a data frame
+
+```{r}
+data = cbind(x,y)
+```
+
+Order them for x and create concomitants on y
+
+```{r}
+newdatax = data[order(x),]
+revnewdatax = data[order(x,decreasing=T),]
+orderedx = newdatax[,1]
+revorderedx=revnewdatax[,1]
+concomy = newdatax[,2]
+newdatax = cbind(orderedx,concomy)
+
+```
+
+Order them for y and create concomitants on x
+```{r}
+newdatay = data[order(y),]
+revnewdatay = data[order(y,decreasing=T),]
+orderedy = newdatay[,2]
+revorderedy = revnewdatay[,2]
+concomx = newdatay[,1]
+newdatay = cbind(orderedy,concomx)
+```
+
+Now put all together
+```{r}
+dataall = cbind(x,y,orderedx,orderedy,concomx,concomy)
+```
+
+Now find the covariance ans correlation matrices
+```{r}
+cor(x,y)
+cor(concomx,orderedx)
+cor(concomy,orderedy)
+
+cor(dataall)
+cor(dataall,method="kendall")
+cov(dataall)
+```
+
+
+NEW MEASURE
+```{r}
+(sum(orderedx-concomx)^2)/sum((orderedx-(mean(x)))^2)
+(sum(orderedx-concomx)^2)/((length(orderedx)-1)*(sd(x))^2)
+(sum(orderedy-concomy)^2)/sum((orderedy-(mean(y)))^2)
+(sum(orderedy-concomy)^2)/((length(orderedy)-1)*(sd(y))^2)
+
+
+```
+
+
+
+```{r}
+sum(concomy*orderedy)
+
+```
+Look at the regression
+```{r}
+lm(orderedy~concomy)
+lm(orderedx~concomx)
+
+```
+
+Now try the PCA on the data
+
+#```{r}
+fit <- princomp(dataall, cor=TRUE)
+summary(fit)
+loadings(fit) # pc loadings 
+plot(fit,type="lines") # scree plot 
+biplot(fit)
+```
+
+Now only consider the four
+#```{r}
+datafour = cbind(orderedx,concomy,orderedy,concomx)
+cov(datafour)
+eigen(cov(datafour))
+eigen(cor(datafour))
+cor(datafour,method="pearson")
+cor(datafour,method="spearman")
+cor(datafour,method="kendall")
+plot(x,y)
+plot(orderedx,concomy)
+plot(orderedx,concomx)
+plot(orderedy,concomy)
+plot(orderedy-orderedx,concomy-y)
+plot(orderedx-orderedy,concomx-x)
+
+cor(x,y)
+cor(orderedx,concomx)
+cor(orderedy,concomy)
+cor(orderedy-orderedx,concomy-y)
+cor(orderedx-orderedy,concomx-x)
+cor(orderedy-orderedx,concomy)
+cor(orderedx-orderedy,concomx)
+
+cor(orderedy-orderedx,concomy-concomx)
+
+(cor(orderedy-orderedx,concomy)+abs(cor(orderedx-orderedy,concomx)))/2
+
+original=cbind(x,y)
+directy=cbind(orderedy,concomy)
+directx=cbind(orderedx,concomx)
+
+biplot(original,directy,var.axes=F)
+biplot(original,directx,var.axes=F)
+
+plot(orderedx,orderedy)
+plot(rank(orderedx),rank(orderedy))
+plot(rank(orderedx),concomy)
+plot(rank(orderedy),concomy)
+cor(x,y)
+cor(rank(orderedx),concomy)
+hist(orderedx)
+hist(orderedy)
+fitfourcov <- princomp(datafour, cor=FALSE)
+fitfourcor <- princomp(datafour, cor=TRUE)
+summary(fitfourcov, loadings=T)
+summary(fitfourcor, loadings=T)
+loadings(fitfourcov) # pc loadings 
+loadings(fitfourcor) # pc loadings
+plot(fitfourcov,type="lines") # scree plot 
+plot(fitfourcor,type="lines") # scree plot
+biplot(fitfourcov)
+biplot(fitfourcor)
+```
+
+
+
+
+
+LET US LOOK AT PROPERTIES OF THE COR MATRIX
+
+#```{r}
+determinant(cor(datafour))
+eigen(cor(datafour))
+
+```
+NOW OUR PROPORTION MEASURE FOR THE DIRECTION
+
+Just consider orderedy and concomy
+#```{r}
+dataxtoy = cbind(concomy,orderedy)
+fitxtoycov <- princomp(dataxtoy, cor=FALSE)
+fitxtoycor <- princomp(dataxtoy, cor=TRUE)
+summary(fitxtoycov,loadings=T)
+summary(fitxtoycor,loadings=T)
+loadings(fitxtoycov) # pc loadings 
+loadings(fitxtoycor) # pc loadings
+plot(fitxtoycov,type="lines") # scree plot 
+plot(fitxtoycor,type="lines") # scree plot
+biplot(fitxtoycov)
+biplot(fitxtoycor)
+```
+
+
+#```{r}
+dataytox = cbind(concomx,orderedx)
+fitytoxcov <- princomp(dataytox, cor=FALSE)
+fitytoxcor <- princomp(dataytox, cor=TRUE)
+summary(fitytoxcov,loadings=T)
+summary(fitytoxcor,loadings=T)
+loadings(fitytoxcov) # pc loadings 
+loadings(fitytoxcor) # pc loadings
+plot(fitytoxcov,type="lines") # scree plot 
+plot(fitytoxcor,type="lines") # scree plot
+biplot(fitytoxcov)
+biplot(fitytoxcor)
+```
+
+
+FIRST ONE IS FROM X TO Y
+```{r}
+sum((orderedy-concomy)^2)
+hist(orderedy-concomy)
+hist((orderedy-concomy)/sd(orderedy))
+summary((orderedy-concomy)/sd(orderedy))
+sd((orderedy-concomy)/sd(orderedy))
+sd((orderedy-mean(orderedy))/sd(orderedy))
+sd(orderedy-concomy)
+hist(orderedx-concomx)
+hist((orderedx-concomx)/sd(orderedx))
+summary((orderedx-concomx)/sd(orderedx))
+sd((orderedx-concomx)/sd(orderedx))
+sd((orderedx-mean(orderedx))/sd(orderedx))
+sd(orderedx-concomx)
+sum((orderedy-mean(orderedy))^2)
+sum((orderedy-mean(orderedy))^2)/(sd(orderedy))^2
+sum((orderedy-concomy)^2)/sum((orderedy-mean(orderedy))^2)
+```
+
+SECOND ONE IS FROM Y TO X
+```{r}
+sum((orderedx-concomx)^2)
+sum((orderedx-mean(orderedx))^2)
+sum((orderedx-concomx)^2)/sum((orderedx-mean(orderedx))^2)
+```
+
+Now the correlation last calculations
+```{r}
+SSUEX=(1/(length(orderedx)-1))*sum(((orderedx-mean(orderedx))/sd(orderedx)-(orderedy-mean(orderedy))/sd(orderedy))*((concomy-mean(concomy))/sd(concomy)-(orderedy-mean(orderedy))/sd(orderedy)))
+
+SSUEX
+
+1-SSUEX
+
+SSUEY=(1/(length(orderedx)-1))*sum(((orderedy-mean(orderedy))/sd(orderedy)-(orderedx-mean(orderedx))/sd(orderedx))*((concomx-mean(concomx))/sd(concomx)-(orderedx-mean(orderedx))/sd(orderedx)))
+
+SSUEY
+
+1-SSUEY
+
+cor(orderedx-orderedy,concomy-orderedy)
+cor(orderedx,orderedy)
+cor(concomy,orderedy)
+corxy=cor(x,y)
+cor(x,y)
+
+SSUEX/(corxy+1)
+cor(orderedx,orderedy)/(corxy+1)
+cor(concomy,orderedy)/(corxy+1)
+cor(concomx,orderedx)/(corxy+1)
+
+
+#Check the equation
+SSUEX+cor(orderedx,orderedy)+cor(concomy,orderedy)-1
+
+cor(orderedx-orderedy,concomy-orderedy)+cor(orderedx,orderedy)+cor(concomy,orderedy)-1
+cor(orderedy-orderedx,concomx-orderedx)
+
+SSUEY+cor(orderedx,orderedy)+cor(concomx,orderedx)-1
+
+cor(concomx,concomy)-cor(orderedy-orderedx,concomx-orderedx)
+```
+
+```{r}
+SSXOREDEREDX=(1/(length(orderedx)-1))*sum(((x-mean(x))/sd(x)-(orderedx-mean(orderedx))/sd(orderedx))^2)
+SSXOREDEREDX
+
+SSCONCOMY=(1/(length(orderedx)-1))*sum(((x-mean(x))/sd(x)-(orderedx-mean(orderedx))/sd(orderedx)-(concomy-mean(concomy))/sd(concomy))^2)
+SSCONCOMY
+
+SSCONCOMYORDEREDY=(1/(length(orderedx)-1))*sum(((x-mean(x))/sd(x)-(orderedx-mean(orderedx))/sd(orderedx)-(concomy-mean(concomy))/sd(concomy)-(orderedy-mean(orderedy))/sd(orderedy))^2)
+SSCONCOMYORDEREDY
+```
+
+To the basics
+```{r}
+ChangeY=sum((concomy-orderedy)^2)
+ChangeX=sum((concomx-orderedx)^2)
+
+ChangeY
+ChangeX
+
+
+sd(concomy-orderedy)
+sd(concomx-orderedx)
+```
+
+NOW TRY STANDARIZING
+
+#```{r}
+ZChangeY=sum(((concomy-mean(concomy)/sd(concomy)-(orderedy-mean(orderedy))/sd(orderedy)))^2)
+ZChangeX=sum(((concomx-mean(concomx)/sd(concomx)-(orderedx-mean(orderedx))/sd(orderedx)))^2)
+```
+```{r}
+ZChangeY=sum(((concomy-mean(concomy)/sd(concomy)*(orderedy-mean(orderedy))/sd(orderedy))))
+ZChangeX=sum(((concomx-mean(concomx)/sd(concomx)*(orderedx-mean(orderedx))/sd(orderedx))))
+
+
+ZChangeY
+ZChangeX
+
+
+(ZChangeY/((length(orderedx)-1)))^(1/2)
+
+SSBOTH=sum(((x-mean(x))/sd(x))*((y-mean(y))/sd(y)))
+SSBOTH
+
+sd((concomy-mean(concomy)/sd(concomy)-(orderedy-mean(orderedy))/sd(orderedy)))
+sd((concomx-mean(concomx)/sd(concomx)-(orderedx-mean(orderedx))/sd(orderedx)))
+sd(x)
+sd(y)
+sd((x-mean(x))/sd(x))
+sd((y-mean(y))/sd(y))
+
+sum(((concomy-mean(concomy)/sd(concomy))*((concomx-mean(concomx)/sd(concomx)))))
+sum((concomy-mean(concomy))*(concomx-mean(concomx)))
+
+sd((concomy-mean(concomy)/sd(concomy)-(orderedy-mean(orderedy))/sd(orderedy)))/sd(y)
+sd((concomx-mean(concomx)/sd(concomx)-(orderedx-mean(orderedx))/sd(orderedx)))/sd(x)
+```
+
+NOW THIS IS THE KEY
+
+```{r}
+sum(((concomy-mean(concomy))/sd(concomy))*((orderedy-mean(orderedy))/sd(orderedy)))/((length(orderedx)-1))
+
+sum(((concomx-mean(concomx))/sd(concomx))*((orderedx-mean(orderedx))/sd(orderedx)))/((length(orderedx)-1))
+
+
+```
+
+```{r}
+cov(concomy,orderedy)
+cov(concomx,orderedx)
+cor(concomy,orderedy)
+cor(concomx,orderedx)
+```
+
+```{r}
+DDXtoY=1-(sum(((concomy-mean(concomy))/sd(concomy))*((orderedy-mean(orderedy))/sd(orderedy)))/((length(orderedx)-1)))^2
+DDYtoX=1-(sum(((concomx-mean(concomx))/sd(concomx))*((orderedx-mean(orderedx))/sd(orderedx)))/((length(orderedx)-1)))^2
+
+DDXtoY
+DDYtoX
+```
+
+
+DECOMPOSED DIRECTIONAL MEASURE
+
+```{r}
+DDXtoYDECOMPOSED=1-(sum(((concomy-mean(concomy))/sd(concomy))*(((orderedy-mean(orderedy))/sd(orderedy))-((orderedx-mean(orderedx))/sd(orderedx))))/((length(orderedx)-1)))^2
+
+DDYtoXDECOMPOSED=1-(sum(((concomx-mean(concomx))/sd(concomx))*(((orderedx-mean(orderedx))/sd(orderedx))-((orderedy-mean(orderedy))/sd(orderedy))))/((length(orderedx)-1)))^2
+
+
+DDXtoYDECOMPOSED
+
+DDYtoXDECOMPOSED
+
+CORXtoYDECOMPOSED=(sum(((concomy-mean(concomy))/sd(concomy))*(((orderedy-mean(orderedy))/sd(orderedy))-((orderedx-mean(orderedx))/sd(orderedx))))/((length(orderedx)-1)))
+
+CORYtoXDECOMPOSED=(sum(((concomx-mean(concomx))/sd(concomx))*(((orderedx-mean(orderedx))/sd(orderedx))-((orderedy-mean(orderedy))/sd(orderedy))))/((length(orderedx)-1)))
+
+CORXtoYDECOMPOSED
+CORYtoXDECOMPOSED
+
+cor(x,y)
+cor(concomy,orderedy)
+cor(concomx,orderedx)
+
+```
+
+NOW TRY THE CANONICAL CORRELATION BETWEEN ORDERED PAIR AND CONCOMITANT PAIR
+
+```{r}
+ordered = cbind(orderedx,orderedy)
+concomed = cbind(concomx,concomy)
+dataed = cbind(x,y)
+cancor(ordered,concomed)
+cancor(dataed,concomed)
+```
+
+
+DETERMINANTS
+
+#```{r}
+cor(datafour)
+det(cor(datafour))
+rho11=matrix(c(1,cor(x,y),cor(x,y),1),nrow=2,byrow=T)
+rho11
+rho12=matrix(c(cor(orderedx,orderedy),cor(orderedx,concomx),cor(concomy,orderedy),cor(concomy,concomx)),nrow=2,byrow=T)
+rho12
+t(rho12)
+rho12%*%t(rho12)
+rho11%*%rho11
+rho11%*%rho11-rho12%*%t(rho12)
+det(rho11%*%rho11-rho12%*%t(rho12))
+rhoyconcom=matrix(c(1,cor(orderedy,concomy),cor(orderedy,concomy),1),nrow=2,byrow=T)
+rhoxconcom=matrix(c(1,cor(orderedx,concomx),cor(orderedx,concomx),1),nrow=2,byrow=T)
+rhoyconcom
+rhoxconcom
+
+```
+
+Now the variance
+```{r}
+var(orderedx)
+var(concomx)
+var(orderedx-concomx)
+var(orderedy-concomy)
+zorderedx=(orderedx-mean(orderedx))/sd(orderedx)
+zrevorderedx=(revorderedx-mean(revorderedx))/sd(revorderedx)
+zorderedy=(orderedy-mean(orderedy))/sd(orderedy)
+zrevorderedy=(revorderedy-mean(revorderedy))/sd(revorderedy)
+zconcomx=(concomx-mean(concomx))/sd(concomx)
+zconcomy=(concomy-mean(concomy))/sd(concomy)
+var(zorderedx-zconcomx)
+var(zorderedy-zconcomy)
+var(zorderedx)
+var(zorderedy)
+```
+
+
+
+CORRELATIONS ON z
+```{r}
+cor(zorderedy,zconcomy)
+cor(zorderedx,zconcomx)
+cor(zorderedy,zconcomx)
+cor(zorderedx,zconcomy)
+cor(zorderedx-zorderedy,concomx)
+cor(zorderedx-zorderedy,concomy)
+
+#TEST
+#THIS IS FOR Y
+cor(zconcomy,zorderedy)
+((1/(length(zorderedy)-1))*sum(zconcomy*(zorderedy-zorderedx)))+cor(zorderedx,zconcomy)
+((1/(length(zorderedy)-1))*sum(zconcomy*(zorderedy-zorderedx)))
+((1/(length(zorderedy)-1))*sum(zconcomy*(zorderedy)))
+-((1/(length(zorderedy)-1))*sum(zconcomy*(zorderedx)))
+cor(zorderedx,zconcomy)
+scatter.smooth(zorderedy-zorderedx,zconcomy)
+scatter.smooth(y,zorderedy-zorderedx)
+#THIS IS FOR X
+cor(zconcomx,zorderedx)
+((1/(length(zorderedx)-1))*sum(zconcomx*(zorderedx-zorderedy)))+cor(zorderedy,zconcomx)
+((1/(length(zorderedx)-1))*sum(zconcomx*(zorderedx-zorderedy)))
+cor(zorderedy,zconcomx)
+scatter.smooth(zorderedx-zorderedy,zconcomx)
+scatter.smooth(x,zorderedx-zorderedy)
+```
+
+
+HERE IT STARTS
+```{r}
+(1/(length(zorderedx)-1))*sum(zconcomy*(zorderedy-zorderedx))
+cor(concomy,orderedy)-cor(x,y)
+sd(concomy)
+sd(y)
+sd(orderedy)
+sd(zconcomy)
+
+(1/(length(zorderedx)-1))*sum(zconcomy*zorderedy)
+cor(concomy,orderedy)
+
+```
+
+
+```{r}
+library(ggplot2)
+plot1 = qplot(x,y) + theme_bw()
+ggsave("plot1.png", width=2, height=2)
+```
+
+
+```{r}
+library(ppcor)
+pcor(data.frame(x,orderedx))
+pcor(data.frame(orderedx,concomy))
+pcor(data.frame(x,orderedx,concomy))
+pcor(data.frame(x,orderedx,concomy,orderedy))
+pcor(data.frame(x,orderedx,concomy,orderedy,y))
+
+#Lower part of the circle
+pcor(data.frame(y,orderedy))
+pcor(data.frame(orderedy,concomx))
+pcor(data.frame(y,orderedy,concomx))
+pcor(data.frame(y,orderedy,concomx,orderedx))
+pcor(data.frame(y,orderedy,concomx,orderedx,x))
+
+# SMALL CIRCLE OF DEPENDENCE
+pcor(data.frame(orderedx,concomy))
+pcor(data.frame(orderedx,concomy,orderedy))
+pcor(data.frame(orderedx,concomy,orderedy,concomx))
+pcor(data.frame(orderedx,concomy,orderedy,concomx,orderedx))
+
+#OTHER WAY
+pcor(data.frame(orderedy,concomx))
+pcor(data.frame(orderedy,concomx,orderedx))
+pcor(data.frame(orderedy,concomx,orderedx,concomy))
+pcor(data.frame(orderedy,concomx,orderedx,concomy,orderedy))
+```
+
+```{r}
+cor(orderedy,concomy)
+cor(x,y)*cor(orderedy,orderedx)
+cor(x,y)*cor(concomy,concomx)
+cor(orderedx,orderedy)*cor(concomx,concomy)
+
+pcor.test(orderedx,concomx,orderedy)
+pcor.test(orderedy,concomy,orderedx)
+cor(x,y)
+
+mean(orderedx*orderedy)
+mean(orderedy*concomy)
+cor(x,y)
+sum(orderedy*concomy)
+sum(orderedx*orderedy)
+sum(orderedx*orderedy)*cor(x,y)
+cor(orderedx,orderedy)
+cor(x,y)
+cor(orderedx,concomx)
+cor(orderedy,concomy)
+cor(x,y)*cor(orderedx,orderedy)
+cor(orderedy,concomy)
+cor(concomx,concomy)
+1/(factorial(length(orderedx)))^2
